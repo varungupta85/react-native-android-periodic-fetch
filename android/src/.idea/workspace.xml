@@ -25,7 +25,7 @@
       <file leaf-file-name="ReactNativeAndroidPeriodicFetchModule.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main/java/com/acintyo/reactnativeandroidperiodicfetch/ReactNativeAndroidPeriodicFetchModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.25742576">
+            <state vertical-scroll-proportion="-1.1905941">
               <caret line="38" column="56" selection-start-line="38" selection-start-column="56" selection-end-line="38" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -398,7 +398,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="269" y="57" width="1400" height="803" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -462,7 +462,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main/java/com/acintyo/reactnativeandroidperiodicfetch/ReactNativeAndroidPeriodicFetchModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25742576">
+        <state vertical-scroll-proportion="-1.1905941">
           <caret line="38" column="56" selection-start-line="38" selection-start-column="56" selection-end-line="38" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
