@@ -20,33 +20,21 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 class ReactNativeAndroidPeriodicFetchModule extends ReactContextBaseJavaModule {
-    private Context context;
-
+    private final Context context;
+    private final PeriodicFetchBroadcastReceiver periodicFetchBroadcastReceiver;
     public ReactNativeAndroidPeriodicFetchModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.context = reactContext;
-        this.registerPeriodicFetchEvent();
+        this.periodicFetchBroadcastReceiver = new PeriodicFetchBroadcastReceiver();
     }
 
     private void registerPeriodicFetchEvent() {
         IntentFilter intentFilter = new IntentFilter("RNPeriodicFetch");
+        getReactApplicationContext().registerReceiver(periodicFetchBroadcastReceiver, intentFilter);
+    }
 
-        getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d("RNAndroidPeriodicFetch", "Received broadcast to perform periodic fetch");
-                ConnectivityManager connectivityManager
-                        = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-                if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
-                    WritableMap params = Arguments.createMap();
-                    sendEvent("periodicFetch", params);
-                }
-                int delayInMsec = intent.getIntExtra("delay", 0);
-                Log.d("RNAndroidPeriodicFetch", String.format("Scheduling next periodic fetch after %s msecs", delayInMsec));
-                ReactNativeAndroidPeriodicFetchModule.this.schedulePeriodicFetch(new Integer(delayInMsec));
-            }
-        }, intentFilter);
+    private void unregisterPeriodicFetchEvent() {
+        getReactApplicationContext().unregisterReceiver(periodicFetchBroadcastReceiver);
     }
 
     private void sendEvent(String eventName, Object params) {
@@ -87,12 +75,31 @@ class ReactNativeAndroidPeriodicFetchModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void start(Integer delayInMsec) {
         Log.d("RNAndroidPeriodicFetch", "Starting the periodic fetch");
+        this.registerPeriodicFetchEvent();
         this.schedulePeriodicFetch(delayInMsec);
     }
 
     @ReactMethod
     public void stop(Integer delayInMsec) {
+        this.unregisterPeriodicFetchEvent();
         PendingIntent pendingIntent = this.getPendingIntentForPeriodicFetch(delayInMsec);
         this.getAlarmManager().cancel(pendingIntent);
+    }
+
+    private class PeriodicFetchBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("RNAndroidPeriodicFetch", "Received broadcast to perform periodic fetch");
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            if(activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+                WritableMap params = Arguments.createMap();
+                ReactNativeAndroidPeriodicFetchModule.this.sendEvent("periodicFetch", params);
+            }
+            int delayInMsec = intent.getIntExtra("delay", 0);
+            Log.d("RNAndroidPeriodicFetch", String.format("Scheduling next periodic fetch after %s msecs", delayInMsec));
+            ReactNativeAndroidPeriodicFetchModule.this.schedulePeriodicFetch(new Integer(delayInMsec));
+        }
     }
 }
